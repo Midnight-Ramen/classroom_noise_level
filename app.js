@@ -23,6 +23,7 @@ let audioData;
 let animationFrame;
 let isPaused = false;
 let currentDb = null;
+let visualDb = null;
 let visualTick = 0;
 
 function clamp(value, min, max) {
@@ -63,14 +64,15 @@ function classifyLevel(db) {
 function renderLevel(db) {
   const rounded = Math.round(db);
   const state = classifyLevel(rounded);
+  currentDb = rounded;
+  visualDb = visualDb === null ? rounded : visualDb + (rounded - visualDb) * 0.08;
   els.dbValue.textContent = rounded;
-  els.noiseBar.style.width = `${percentForDb(rounded)}%`;
+  els.noiseBar.style.width = `${percentForDb(visualDb)}%`;
   els.noiseBar.classList.toggle("warning", state.className === "warning");
   els.noiseBar.classList.toggle("loud", state.className === "loud");
   els.levelStatus.className = `status-pill ${state.className === "quiet" ? "" : state.className}`;
   els.levelStatus.textContent = state.label;
-  currentDb = rounded;
-  visualTick += 1;
+  visualTick += 0.12;
   drawGraph();
 }
 
@@ -112,7 +114,7 @@ function drawGraph() {
   const barCount = clamp(Math.floor(plotWidth / 16), 18, 44);
   const gap = 5;
   const barWidth = Math.max(7, (plotWidth - gap * (barCount - 1)) / barCount);
-  const levelPercent = percentForDb(currentDb) / 100;
+  const levelPercent = percentForDb(visualDb ?? currentDb) / 100;
   const state = classifyLevel(currentDb);
 
   graphContext.fillStyle = state.className === "loud"
@@ -124,7 +126,7 @@ function drawGraph() {
   for (let index = 0; index < barCount; index += 1) {
     const distanceFromCenter = Math.abs(index - (barCount - 1) / 2) / (barCount / 2);
     const centerBoost = 1 - distanceFromCenter * 0.38;
-    const pulse = 0.84 + Math.sin(visualTick * 0.55 + index * 0.72) * 0.12 + Math.cos(index * 1.7) * 0.06;
+    const pulse = 0.88 + Math.sin(visualTick + index * 0.72) * 0.08 + Math.cos(index * 1.7) * 0.04;
     const normalizedHeight = clamp(levelPercent * centerBoost * pulse, 0.04, 1);
     const barHeight = Math.max(10, normalizedHeight * plotHeight);
     const x = padding + index * (barWidth + gap);

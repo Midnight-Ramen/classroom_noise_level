@@ -66,7 +66,7 @@ p {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 28px;
+  padding: 14px;
 }
 
 .meter-app {
@@ -75,15 +75,15 @@ p {
   border-radius: 8px;
   background: var(--panel);
   box-shadow: var(--shadow);
-  padding: clamp(20px, 4vw, 42px);
+  padding: clamp(16px, 2.6vw, 28px);
 }
 
 .app-header {
   display: grid;
   justify-items: center;
-  gap: 24px;
-  margin-bottom: 30px;
-  padding-bottom: 28px;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--line);
   text-align: center;
 }
@@ -91,7 +91,7 @@ p {
 .school-logo {
   display: block;
   width: 100%;
-  max-width: min(640px, 92%);
+  max-width: min(420px, 78%);
 }
 
 .title-lockup {
@@ -101,16 +101,16 @@ p {
 
 h1 {
   margin-top: 0;
-  font-size: clamp(3.4rem, 8vw, 5.6rem);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
   font-weight: 900;
-  line-height: 0.92;
+  line-height: 0.94;
   letter-spacing: 0;
 }
 
 .credit {
-  margin-top: 18px;
+  margin-top: 10px;
   color: var(--muted);
-  font-size: clamp(1rem, 2vw, 1.28rem);
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
   font-weight: 750;
 }
 
@@ -120,7 +120,7 @@ h1 {
   justify-content: space-between;
   gap: 20px;
   border-block: 1px solid var(--line);
-  padding: 22px 0;
+  padding: 14px 0;
 }
 
 .status-pill {
@@ -160,7 +160,7 @@ h1 {
 
 #dbValue {
   min-width: 3ch;
-  font-size: clamp(4.8rem, 17vw, 9rem);
+  font-size: clamp(3.6rem, 11vw, 6.6rem);
   line-height: 0.8;
   letter-spacing: 0;
   text-align: right;
@@ -173,8 +173,8 @@ h1 {
 
 .visualizer {
   display: grid;
-  gap: 20px;
-  padding: 28px 0;
+  gap: 14px;
+  padding: 18px 0;
 }
 
 .bar-track {
@@ -226,7 +226,7 @@ h1 {
 #historyGraph {
   display: block;
   width: 100%;
-  height: 250px;
+  height: clamp(140px, 23vh, 190px);
   border: 1px solid var(--line);
   border-radius: 8px;
   background: linear-gradient(180deg, #fbfcfa 0%, #f2f6f2 100%);
@@ -234,7 +234,7 @@ h1 {
 
 .threshold-control {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 
 .threshold-copy {
@@ -258,12 +258,12 @@ input[type="range"] {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 24px;
+  margin-top: 16px;
 }
 
 .help-text {
   min-height: 1.4em;
-  margin-top: 16px;
+  margin-top: 10px;
   color: var(--muted);
   line-height: 1.45;
 }
@@ -279,7 +279,7 @@ input[type="range"] {
   }
 
   .school-logo {
-    max-width: 320px;
+    max-width: 280px;
   }
 
   #dbValue {
@@ -288,5 +288,60 @@ input[type="range"] {
 
   .actions button {
     flex: 1 1 180px;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 760px) {
+  .page-shell {
+    padding: 8px;
+  }
+
+  .meter-app {
+    padding: 16px 22px;
+  }
+
+  .app-header {
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+
+  .school-logo {
+    max-width: 330px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4.4vw, 3.2rem);
+  }
+
+  .credit {
+    margin-top: 6px;
+    font-size: 0.9rem;
+  }
+
+  .readout {
+    padding: 10px 0;
+  }
+
+  #dbValue {
+    font-size: clamp(3rem, 9vw, 5.2rem);
+  }
+
+  .visualizer {
+    gap: 10px;
+    padding: 12px 0;
+  }
+
+  #historyGraph {
+    height: clamp(115px, 20vh, 145px);
+  }
+
+  .actions {
+    margin-top: 10px;
+  }
+
+  .help-text {
+    margin-top: 8px;
+    font-size: 0.92rem;
   }
 }
