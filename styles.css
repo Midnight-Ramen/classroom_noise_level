@@ -80,39 +80,38 @@ p {
 
 .app-header {
   display: grid;
-  grid-template-columns: minmax(260px, 410px) minmax(360px, 1fr);
-  align-items: center;
-  gap: clamp(24px, 6vw, 64px);
+  justify-items: center;
+  gap: 24px;
   margin-bottom: 30px;
-  padding-bottom: 26px;
+  padding-bottom: 28px;
   border-bottom: 1px solid var(--line);
+  text-align: center;
 }
 
 .school-logo {
   display: block;
   width: 100%;
-  max-width: 410px;
-  justify-self: start;
+  max-width: min(640px, 92%);
 }
 
 .title-lockup {
   min-width: 0;
-  text-align: left;
+  text-align: center;
 }
 
 h1 {
   margin-top: 0;
-  font-size: clamp(2.6rem, 7vw, 5.2rem);
+  font-size: clamp(3.4rem, 8vw, 5.6rem);
   font-weight: 900;
   line-height: 0.92;
   letter-spacing: 0;
 }
 
 .credit {
-  margin-top: 12px;
+  margin-top: 18px;
   color: var(--muted);
-  font-size: clamp(0.9rem, 1.6vw, 1rem);
-  font-weight: 650;
+  font-size: clamp(1rem, 2vw, 1.28rem);
+  font-weight: 750;
 }
 
 .readout {
@@ -279,19 +278,8 @@ input[type="range"] {
     flex-direction: column;
   }
 
-  .app-header {
-    grid-template-columns: 1fr;
-    gap: 18px;
-    text-align: center;
-  }
-
   .school-logo {
     max-width: 320px;
-    justify-self: center;
-  }
-
-  .title-lockup {
-    text-align: center;
   }
 
   #dbValue {
