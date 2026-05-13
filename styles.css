@@ -1,0 +1,277 @@
+:root {
+  color-scheme: light;
+  --bg: #f7f8f5;
+  --panel: #ffffff;
+  --ink: #17201c;
+  --muted: #68736d;
+  --line: #d9dfd8;
+  --quiet: #237c5c;
+  --warn: #c77b1e;
+  --loud: #c84335;
+  --track: #edf1ed;
+  --shadow: 0 22px 70px rgba(23, 32, 28, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  min-height: 44px;
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  padding: 0 18px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus-visible {
+  outline: 3px solid rgba(35, 124, 92, 0.18);
+  outline-offset: 2px;
+}
+
+button.secondary {
+  border-color: var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+.page-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+
+.meter-app {
+  width: min(920px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  padding: clamp(20px, 4vw, 42px);
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.kicker {
+  color: var(--quiet);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin-top: 8px;
+  font-size: clamp(2.1rem, 7vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.credit {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: clamp(0.92rem, 2vw, 1.05rem);
+}
+
+.readout {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  border-block: 1px solid var(--line);
+  padding: 22px 0;
+}
+
+.status-pill {
+  display: inline-flex;
+  min-width: 92px;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(35, 124, 92, 0.1);
+  color: var(--quiet);
+  padding: 7px 12px;
+  font-size: 0.83rem;
+  font-weight: 800;
+}
+
+.status-pill.warning {
+  background: rgba(199, 123, 30, 0.12);
+  color: var(--warn);
+}
+
+.status-pill.loud {
+  background: rgba(200, 67, 53, 0.12);
+  color: var(--loud);
+}
+
+.level-label {
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.decibel-value {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-weight: 850;
+}
+
+#dbValue {
+  min-width: 3ch;
+  font-size: clamp(4.8rem, 17vw, 9rem);
+  line-height: 0.8;
+  letter-spacing: 0;
+  text-align: right;
+}
+
+.decibel-value span:last-child {
+  color: var(--muted);
+  font-size: clamp(1.4rem, 4vw, 2.3rem);
+}
+
+.visualizer {
+  display: grid;
+  gap: 20px;
+  padding: 28px 0;
+}
+
+.bar-track {
+  position: relative;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--track);
+}
+
+.noise-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--quiet);
+  transition: width 180ms ease, background-color 180ms ease;
+}
+
+.noise-bar.warning {
+  background: var(--warn);
+}
+
+.noise-bar.loud {
+  background: var(--loud);
+}
+
+.threshold-line {
+  position: absolute;
+  inset-block: 0;
+  left: 65%;
+  z-index: 2;
+  width: 3px;
+  background: var(--ink);
+}
+
+.threshold-line::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+
+#historyGraph {
+  display: block;
+  width: 100%;
+  height: 230px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfa;
+}
+
+.threshold-control {
+  display: grid;
+  gap: 12px;
+}
+
+.threshold-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.threshold-copy span {
+  color: var(--ink);
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--quiet);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.help-text {
+  min-height: 1.4em;
+  margin-top: 16px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    padding: 12px;
+  }
+
+  .readout {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  #dbValue {
+    text-align: left;
+  }
+
+  .actions button {
+    flex: 1 1 180px;
+  }
+}

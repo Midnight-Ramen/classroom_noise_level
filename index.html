@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Classroom Noise Level</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="meter-app" aria-labelledby="appTitle">
+        <header class="app-header">
+          <p class="kicker">Forest Ridge</p>
+          <h1 id="appTitle">Classroom Noise Level</h1>
+          <p class="credit">Created by Forest Ridge Innovation Lab</p>
+        </header>
+
+        <section class="readout" aria-live="polite">
+          <div>
+            <span id="levelStatus" class="status-pill">Ready</span>
+            <p class="level-label">Current level</p>
+          </div>
+          <div class="decibel-value">
+            <span id="dbValue">--</span>
+            <span>dB</span>
+          </div>
+        </section>
+
+        <section class="visualizer" aria-label="Noise level visualizer">
+          <div class="bar-track">
+            <div id="thresholdLine" class="threshold-line" aria-hidden="true"></div>
+            <div id="noiseBar" class="noise-bar"></div>
+          </div>
+          <canvas id="historyGraph" width="900" height="230" aria-label="Recent classroom noise graph"></canvas>
+        </section>
+
+        <section class="threshold-control" aria-label="Threshold settings">
+          <div class="threshold-copy">
+            <label for="thresholdInput">Acceptable noise level</label>
+            <span><strong id="thresholdValue">65</strong> dB</span>
+          </div>
+          <input id="thresholdInput" type="range" min="35" max="95" value="65" step="1">
+        </section>
+
+        <div class="actions">
+          <button id="startButton" type="button">Start microphone</button>
+          <button id="demoButton" type="button" class="secondary">Try demo</button>
+        </div>
+
+        <p id="helpText" class="help-text">
+          Microphone readings are estimated by the browser and work best after allowing microphone access.
+        </p>
+      </section>
+    </main>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
