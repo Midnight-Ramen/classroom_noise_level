@@ -4,7 +4,7 @@ const HISTORY_LENGTH = 90;
 
 const els = {
   startButton: document.getElementById("startButton"),
-  demoButton: document.getElementById("demoButton"),
+  pauseButton: document.getElementById("pauseButton"),
   dbValue: document.getElementById("dbValue"),
   noiseBar: document.getElementById("noiseBar"),
   thresholdInput: document.getElementById("thresholdInput"),
@@ -23,8 +23,7 @@ let analyser;
 let microphone;
 let audioData;
 let animationFrame;
-let demoTimer;
-let isDemo = false;
+let isPaused = false;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -137,19 +136,20 @@ function estimateDbFromWaveform() {
 }
 
 function readMicrophone() {
-  renderLevel(estimateDbFromWaveform());
+  if (!isPaused) {
+    renderLevel(estimateDbFromWaveform());
+  }
   animationFrame = requestAnimationFrame(readMicrophone);
 }
 
-function stopDemo() {
-  isDemo = false;
-  window.clearInterval(demoTimer);
-  demoTimer = null;
-  els.demoButton.textContent = "Try demo";
+function updatePauseButton() {
+  els.pauseButton.textContent = isPaused ? "Play" : "Pause";
+  els.pauseButton.setAttribute("aria-pressed", String(isPaused));
 }
 
 async function startMicrophone() {
-  stopDemo();
+  isPaused = false;
+  updatePauseButton();
   window.cancelAnimationFrame(animationFrame);
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -169,34 +169,23 @@ async function startMicrophone() {
     els.helpText.textContent = "Move the acceptable noise level slider to set the classroom target.";
     readMicrophone();
   } catch {
-    els.helpText.textContent = "Microphone access was blocked or unavailable. Use demo mode to preview the display.";
+    els.helpText.textContent = "Microphone access was blocked or unavailable. Check browser permissions, then try again.";
   }
 }
 
-function toggleDemo() {
-  if (isDemo) {
-    stopDemo();
-    els.helpText.textContent = "Demo stopped. Start the microphone when you are ready.";
-    return;
-  }
-
-  window.cancelAnimationFrame(animationFrame);
-  isDemo = true;
-  let tick = 0;
-  els.demoButton.textContent = "Stop demo";
-  els.helpText.textContent = "Demo mode is showing simulated classroom noise.";
-  demoTimer = window.setInterval(() => {
-    tick += 1;
-    const wave = Math.sin(tick / 4) * 9 + Math.sin(tick / 11) * 5;
-    const surprise = tick % 23 === 0 ? 18 : 0;
-    renderLevel(clamp(58 + wave + surprise + Math.random() * 4, MIN_DB, MAX_DB));
-  }, 260);
+function togglePause() {
+  isPaused = !isPaused;
+  updatePauseButton();
+  els.helpText.textContent = isPaused
+    ? "Noise level display paused. Press Play to resume live updates."
+    : "Live noise level updates resumed.";
 }
 
 els.startButton.addEventListener("click", startMicrophone);
-els.demoButton.addEventListener("click", toggleDemo);
+els.pauseButton.addEventListener("click", togglePause);
 els.thresholdInput.addEventListener("input", updateThreshold);
 window.addEventListener("resize", resizeCanvas);
 
+updatePauseButton();
 updateThreshold();
 resizeCanvas();

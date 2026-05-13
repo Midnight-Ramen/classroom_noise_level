@@ -14,4 +14,4 @@ Then open:
 http://127.0.0.1:4180/
 ```
 
-The microphone works best from localhost. Use the demo button to preview the display without microphone access.
+The microphone works best from localhost. Use the Pause button to freeze the display, then Play to resume live updates.
