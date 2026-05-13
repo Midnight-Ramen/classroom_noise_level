@@ -1,6 +1,5 @@
 const MIN_DB = 30;
 const MAX_DB = 100;
-const HISTORY_LENGTH = 90;
 
 const els = {
   startButton: document.getElementById("startButton"),
@@ -16,7 +15,6 @@ const els = {
 };
 
 const graphContext = els.graph.getContext("2d");
-const history = Array.from({ length: HISTORY_LENGTH }, () => null);
 
 let audioContext;
 let analyser;
@@ -24,6 +22,8 @@ let microphone;
 let audioData;
 let animationFrame;
 let isPaused = false;
+let currentDb = null;
+let visualTick = 0;
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
@@ -69,8 +69,8 @@ function renderLevel(db) {
   els.noiseBar.classList.toggle("loud", state.className === "loud");
   els.levelStatus.className = `status-pill ${state.className === "quiet" ? "" : state.className}`;
   els.levelStatus.textContent = state.label;
-  history.push(rounded);
-  history.shift();
+  currentDb = rounded;
+  visualTick += 1;
   drawGraph();
 }
 
@@ -81,7 +81,6 @@ function drawGraph() {
   const plotWidth = width - padding * 2;
   const plotHeight = height - padding * 2;
   const limitY = height - padding - (percentForDb(threshold()) / 100) * plotHeight;
-  const populated = history.filter((value) => value !== null);
 
   graphContext.clearRect(0, 0, width, height);
   graphContext.fillStyle = "#fbfcfa";
@@ -105,29 +104,33 @@ function drawGraph() {
   graphContext.stroke();
   graphContext.setLineDash([]);
 
-  if (!populated.length) {
+  if (currentDb === null) {
     drawIdleBars(padding, plotWidth, height, plotHeight);
     return;
   }
 
   const barCount = clamp(Math.floor(plotWidth / 16), 18, 44);
-  const bars = history.slice(-barCount);
   const gap = 5;
-  const barWidth = Math.max(7, (plotWidth - gap * (bars.length - 1)) / bars.length);
+  const barWidth = Math.max(7, (plotWidth - gap * (barCount - 1)) / barCount);
+  const levelPercent = percentForDb(currentDb) / 100;
+  const state = classifyLevel(currentDb);
 
-  bars.forEach((db, index) => {
-    const value = db ?? MIN_DB;
-    const barHeight = Math.max(8, (percentForDb(value) / 100) * plotHeight);
+  graphContext.fillStyle = state.className === "loud"
+    ? "#c84335"
+    : state.className === "warning"
+      ? "#c77b1e"
+      : "#237c5c";
+
+  for (let index = 0; index < barCount; index += 1) {
+    const distanceFromCenter = Math.abs(index - (barCount - 1) / 2) / (barCount / 2);
+    const centerBoost = 1 - distanceFromCenter * 0.38;
+    const pulse = 0.84 + Math.sin(visualTick * 0.55 + index * 0.72) * 0.12 + Math.cos(index * 1.7) * 0.06;
+    const normalizedHeight = clamp(levelPercent * centerBoost * pulse, 0.04, 1);
+    const barHeight = Math.max(10, normalizedHeight * plotHeight);
     const x = padding + index * (barWidth + gap);
     const y = height - padding - barHeight;
-    const state = classifyLevel(value);
-    graphContext.fillStyle = state.className === "loud"
-      ? "#c84335"
-      : state.className === "warning"
-        ? "#c77b1e"
-        : "#237c5c";
     drawRoundedBar(x, y, barWidth, barHeight, Math.min(5, barWidth / 2));
-  });
+  }
 }
 
 function drawIdleBars(padding, plotWidth, height, plotHeight) {
