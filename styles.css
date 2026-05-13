@@ -215,10 +215,10 @@ h1 {
 #historyGraph {
   display: block;
   width: 100%;
-  height: 230px;
+  height: 250px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fbfcfa;
+  background: linear-gradient(180deg, #fbfcfa 0%, #f2f6f2 100%);
 }
 
 .threshold-control {

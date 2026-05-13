@@ -77,8 +77,11 @@ function renderLevel(db) {
 function drawGraph() {
   const width = els.graph.clientWidth;
   const height = els.graph.clientHeight;
-  const limitY = height - (percentForDb(threshold()) / 100) * height;
-  const firstValueIndex = history.findIndex((value) => value !== null);
+  const padding = 18;
+  const plotWidth = width - padding * 2;
+  const plotHeight = height - padding * 2;
+  const limitY = height - padding - (percentForDb(threshold()) / 100) * plotHeight;
+  const populated = history.filter((value) => value !== null);
 
   graphContext.clearRect(0, 0, width, height);
   graphContext.fillStyle = "#fbfcfa";
@@ -102,25 +105,58 @@ function drawGraph() {
   graphContext.stroke();
   graphContext.setLineDash([]);
 
-  if (firstValueIndex < 0 || history.filter((value) => value !== null).length < 2) return;
+  if (!populated.length) {
+    drawIdleBars(padding, plotWidth, height, plotHeight);
+    return;
+  }
 
-  graphContext.strokeStyle = "#237c5c";
-  graphContext.lineWidth = 3;
-  graphContext.lineJoin = "round";
-  graphContext.lineCap = "round";
-  graphContext.beginPath();
+  const barCount = clamp(Math.floor(plotWidth / 16), 18, 44);
+  const bars = history.slice(-barCount);
+  const gap = 5;
+  const barWidth = Math.max(7, (plotWidth - gap * (bars.length - 1)) / bars.length);
 
-  history.forEach((db, index) => {
-    if (db === null) return;
-    const x = (index / (HISTORY_LENGTH - 1)) * width;
-    const y = height - (percentForDb(db) / 100) * height;
-    if (index === firstValueIndex) {
-      graphContext.moveTo(x, y);
-    } else {
-      graphContext.lineTo(x, y);
-    }
+  bars.forEach((db, index) => {
+    const value = db ?? MIN_DB;
+    const barHeight = Math.max(8, (percentForDb(value) / 100) * plotHeight);
+    const x = padding + index * (barWidth + gap);
+    const y = height - padding - barHeight;
+    const state = classifyLevel(value);
+    graphContext.fillStyle = state.className === "loud"
+      ? "#c84335"
+      : state.className === "warning"
+        ? "#c77b1e"
+        : "#237c5c";
+    drawRoundedBar(x, y, barWidth, barHeight, Math.min(5, barWidth / 2));
   });
-  graphContext.stroke();
+}
+
+function drawIdleBars(padding, plotWidth, height, plotHeight) {
+  const bars = 32;
+  const gap = 6;
+  const barWidth = (plotWidth - gap * (bars - 1)) / bars;
+  graphContext.fillStyle = "rgba(35, 124, 92, 0.18)";
+
+  for (let index = 0; index < bars; index += 1) {
+    const wave = 0.32 + Math.sin(index * 0.78) * 0.16 + Math.cos(index * 0.35) * 0.1;
+    const barHeight = Math.max(10, plotHeight * wave);
+    const x = padding + index * (barWidth + gap);
+    const y = height - padding - barHeight;
+    drawRoundedBar(x, y, barWidth, barHeight, Math.min(5, barWidth / 2));
+  }
+}
+
+function drawRoundedBar(x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  graphContext.beginPath();
+  graphContext.moveTo(x + r, y);
+  graphContext.lineTo(x + width - r, y);
+  graphContext.quadraticCurveTo(x + width, y, x + width, y + r);
+  graphContext.lineTo(x + width, y + height);
+  graphContext.lineTo(x, y + height);
+  graphContext.lineTo(x, y + r);
+  graphContext.quadraticCurveTo(x, y, x + r, y);
+  graphContext.closePath();
+  graphContext.fill();
 }
 
 function estimateDbFromWaveform() {
